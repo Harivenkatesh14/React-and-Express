@@ -1,81 +1,83 @@
-import React, { useState } from "react";
-import "./App.css"; // For adding custom styles
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 function App() {
-  const [tasks, setTasks] = useState([]); // Store all tasks
-  const [newTask, setNewTask] = useState(""); // Handle input for new tasks
+  const [todos, setTodos] = useState([]);
+  const [newTodo, setNewTodo] = useState('');
 
-  // Add a new task
-  const addTask = () => {
-    if (newTask.trim()) {
-      setTasks([...tasks, { text: newTask, completed: false }]);
-      setNewTask(""); // Clear input field
-    }
+  // Fetch todos from the backend when the component mounts
+  useEffect(() => {
+    axios.get('http://localhost:5000/todos')
+      .then(response => {
+        setTodos(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching todos:', error);
+      });
+  }, []); // Empty array ensures this runs only once when the component mounts
+
+  // Handle adding a new to-do
+  const handleAddTodo = () => {
+    if (newTodo.trim() === '') return;
+
+    axios.post('http://localhost:5000/todos', { text: newTodo })
+      .then(response => {
+        setTodos([...todos, response.data]);
+        setNewTodo('');
+      })
+      .catch(error => {
+        console.error('Error adding todo:', error);
+      });
   };
 
-  // Toggle task completion
-  const toggleTaskCompletion = (index) => {
-    const updatedTasks = tasks.map((task, idx) =>
-      idx === index ? { ...task, completed: !task.completed } : task
-    );
-    setTasks(updatedTasks);
+  // Handle deleting a to-do
+  const handleDeleteTodo = (id) => {
+    axios.delete(`http://localhost:5000/todos/${id}`)
+      .then(() => {
+        setTodos(todos.filter(todo => todo.id !== id));
+      })
+      .catch(error => {
+        console.error('Error deleting todo:', error);
+      });
   };
 
-  // Remove a task
-  const removeTask = (index) => {
-    const updatedTasks = tasks.filter((_, idx) => idx !== index);
-    setTasks(updatedTasks);
+  // Handle toggling completion status of a to-do
+  const handleToggleTodo = (id) => {
+    axios.put(`http://localhost:5000/todos/${id}`)
+      .then(response => {
+        const updatedTodos = todos.map(todo =>
+          todo.id === id ? { ...todo, completed: response.data.completed } : todo
+        );
+        setTodos(updatedTodos);
+      })
+      .catch(error => {
+        console.error('Error toggling todo:', error);
+      });
   };
 
   return (
-    <div className="todo-app">
-      <h2>A Simple ToDo List App</h2>
+    <div className="App">
+      <h1>To-Do App</h1>
+      <input
+        type="text"
+        value={newTodo}
+        onChange={(e) => setNewTodo(e.target.value)}
+        placeholder="Enter a new task"
+      />
+      <button onClick={handleAddTodo}>Add To-Do</button>
 
-      {/* Input and Add Task Button */}
-      <div className="add-task">
-        <input
-          type="text"
-          placeholder="Add new task"
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
-        />
-        <button onClick={addTask}>Add Task</button>
-      </div>
-
-      {/* Added Task Section */}
-      <h3>Added Task</h3>
-      <ul className="task-list">
-        {tasks
-          .filter((task) => !task.completed)
-          .map((task, index) => (
-            <li key={index} className="task-item">
-              <input
-                type="checkbox"
-                onChange={() => toggleTaskCompletion(index)}
-              />
-              {task.text}
-              <button className="remove-btn" onClick={() => removeTask(index)}>
-                Remove
-              </button>
-            </li>
-          ))}
-      </ul>
-
-      {/* Completed Task Section */}
-      <h3>Completed task</h3>
-      <ul className="task-list">
-        {tasks
-          .filter((task) => task.completed)
-          .map((task, index) => (
-            <li key={index} className="task-item completed">
-              <input
-                type="checkbox"
-                checked
-                onChange={() => toggleTaskCompletion(index)}
-              />
-              {task.text}
-            </li>
-          ))}
+      <ul>
+        {todos.map(todo => (
+          <li key={todo.id}>
+            <span
+              style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}
+              onClick={() => handleToggleTodo(todo.id)}
+            >
+              {todo.text}
+            </span>
+            <button onClick={() => handleDeleteTodo(todo.id)}>Delete</button>
+          </li>
+        ))}
       </ul>
     </div>
   );

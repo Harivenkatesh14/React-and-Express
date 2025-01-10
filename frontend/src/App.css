@@ -1,0 +1,109 @@
+/* Reset some default styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Overall body styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f7fc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+  color: #333;
+}
+
+/* Heading style */
+h1 {
+  color: #4CAF50;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Input and button container */
+.input-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Task input box */
+input {
+  padding: 10px;
+  font-size: 16px;
+  width: 300px;
+  border-radius: 5px;
+  border: 2px solid #ddd;
+  margin-right: 10px;
+  outline: none;
+  transition: border 0.3s ease;
+}
+
+/* Focus effect for input */
+input:focus {
+  border-color: #4CAF50;
+}
+
+/* Add Todo button */
+button {
+  padding: 10px 15px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Button hover effect */
+button:hover {
+  background-color: #45a049;
+}
+
+/* Task list container */
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 20px;
+  width: 350px;
+}
+
+/* Each task item */
+li {
+  background-color: #fff;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
+
+/* Hover effect on tasks */
+li:hover {
+  background-color: #f1f1f1;
+}
+
+/* Delete button inside each task */
+button.delete-btn {
+  background-color: red;
+  padding: 5px 10px;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Hover effect for delete button */
+button.delete-btn:hover {
+  background-color: #e60000;
+}
